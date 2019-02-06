@@ -1,4 +1,4 @@
-FROM mongo:latest
+FROM alpine:3.9
 
 RUN apt-get update && apt-get install -y \
   bash \
@@ -9,7 +9,8 @@ RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk-xenial main" | tee 
   apt-get update && \
   apt-get install -y google-cloud-sdk
 
-ADD ./backup.sh /mongodb-gcs-backup/backup.sh
+ADD . /mongodb-gcs-backup
+WORKDIR /mongodb-gcs-backup
 
 RUN chmod +x /mongodb-gcs-backup/backup.sh
 
