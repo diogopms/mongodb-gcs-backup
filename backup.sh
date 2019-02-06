@@ -6,6 +6,7 @@ set -o errtrace
 set -o nounset
 # set -o xtrace
 
+JOB_NAME=${JOB_NAME:-default-name}
 BACKUP_DIR=${BACKUP_DIR:-/tmp}
 BOTO_CONFIG_PATH=${BOTO_CONFIG_PATH:-/root/.boto}
 GCS_BUCKET=${GCS_BUCKET:-}
@@ -17,6 +18,7 @@ MONGODB_USER=${MONGODB_USER:-}
 MONGODB_PASSWORD=${MONGODB_PASSWORD:-}
 MONGODB_OPLOG=${MONGODB_OPLOG:-}
 SLACK_ALERTS=${SLACK_ALERTS:-}
+SLACK_AUTHOR_NAME=${SLACK_AUTHOR_NAME:-mongodb-gcs-backup}
 SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
 SLACK_CHANNEL=${SLACK_CHANNEL:-}
 SLACK_USERNAME=${SLACK_USERNAME:-}
@@ -25,7 +27,7 @@ SLACK_ICON=${SLACK_ICON:-}
 backup() {
   mkdir -p $BACKUP_DIR
   date=$(date "+%Y-%m-%dT%H:%M:%SZ")
-  archive_name="backup-$date.tar.gz"
+  archive_name="$JOB_NAME-backup-$date.tar.gz"
 
   cmd_auth_part=""
   if [[ ! -z $MONGODB_USER ]] && [[ ! -z $MONGODB_PASSWORD ]]
@@ -51,6 +53,10 @@ backup() {
 }
 
 upload_to_gcs() {
+  if [[ ! "$GCS_BUCKET" =~ gs://* ]]; then
+    GCS_BUCKET="gs://${GCS_BUCKET}"
+  fi
+
   if [[ $GCS_KEY_FILE_PATH != "" ]]
   then
 cat <<EOF > $BOTO_CONFIG_PATH
@@ -76,10 +82,11 @@ send_slack_message() {
 
   echo 'Sending to '${SLACK_CHANNEL}'...'
   curl --silent --data-urlencode \
-    "$(printf 'payload={"channel": "%s", "username": "%s", "link_names": "true", "icon_emoji": "%s", "attachments": [{"author_name": "mongodb-gcs-backup", "title": "%s", "text": "%s", "color": "%s"}]}' \
+    "$(printf 'payload={"channel": "%s", "username": "%s", "link_names": "true", "icon_url": "%s", "attachments": [{"author_name": "%s", "title": "%s", "text": "%s", "color": "%s"}]}' \
         "${SLACK_CHANNEL}" \
         "${SLACK_USERNAME}" \
         "${SLACK_ICON}" \
+        "${SLACK_AUTHOR_NAME}"
         "${title}" \
         "${message}" \
         "${color}" \
@@ -89,11 +96,11 @@ send_slack_message() {
 }
 
 err() {
-  err_msg="Something went wrong on line $(caller)"
+  err_msg="${JOB_NAME} - Something went wrong on line $(caller)"
   echo $err_msg >&2
   if [[ $SLACK_ALERTS == "true" ]]
   then
-    send_slack_message "danger" "Error while performing mongodb backup" "$err_msg"
+    send_slack_message "danger" "${JOB_NAME} - Error while performing mongodb backup" "$err_msg"
   fi
 }
 

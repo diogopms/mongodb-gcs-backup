@@ -1,0 +1,4 @@
+*.env
+*json*
+deploy.sh
+

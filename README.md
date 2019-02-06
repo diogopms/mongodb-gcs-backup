@@ -4,13 +4,17 @@ This project aims to provide a simple way to perform a MongoDB server/db backup 
 
 We provide a kubernetes support thanks to the helm chart located in the `chart` folder of this repository.
 
-
 ### Docker image
 
 You can pull the public image from Docker Hub:
 
-    docker pull zoov/mongodb-gcs-backup:latest
+    docker pull diogopms/mongodb-gcs-backup:latest
 
+    #Manual build
+    docker build -t diogopms/mongodb-gcs-backup .
+
+    #Run
+    docker run --rm --env-file .env diogopms/mongodb-gcs-backup
 
 ### Configuration
 
@@ -18,6 +22,7 @@ The following table lists the configurable parameters you can set up.
 
 Environment Variable | Required | Default | Description
 ---------------------|----------|---------|-------------
+`JOB_NAME` | No | `default-name` | Job name
 `BACKUP_DIR` | No | `/tmp` | The path where the `mongodump` result will be temporarily stored.
 `BOTO_CONFIG_PATH` | No | `/root/.boto` | The path where `gsutil` will search for the boto configuration file.
 `GCS_BUCKET` | Yes |  | The bucket you want to upload the backup archive to.
@@ -28,15 +33,14 @@ Environment Variable | Required | Default | Description
 `MONGODB_USER` | No |  | The MongoDB user if any.
 `MONGODB_PASSWORD` | No |  | The MongoDB password if any.
 `MONGODB_OPLOG` | No |  | `true` if you want to perform a `mongodump` with the `--oplog` flag, false otherwise.
+`SLACK_AUTHOR_NAME` | No | `mongodb-gcs-backup` | `true` slack author name.
 `SLACK_ALERTS` | No |  | `true` if you want to send Slack alerts in case of failure.
 `SLACK_WEBHOOK_URL` | No |  | The Incoming WebHook URL to use to send the alerts.
 `SLACK_CHANNEL` | No |  | The channel to send Slack messages to.
 `SLACK_USERNAME` | No |  | The user to send Slack messages as.
 `SLACK_ICON` | No |  | The Slack icon to associate to the user/message.
 
-
 You can set all of these variables within your `values.yaml` file under the `env` dict key.
-
 
 ### Usage
 

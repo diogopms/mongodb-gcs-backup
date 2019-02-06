@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:3.9
 
 RUN apk add --update \
   bash \
@@ -19,7 +19,7 @@ RUN apk add --update \
   && apk del build-deps \
   && rm -rf /var/cache/apk/*
 
-ADD ./backup.sh /mongodb-gcs-backup/backup.sh
+ADD . /mongodb-gcs-backup
 WORKDIR /mongodb-gcs-backup
 
 RUN chmod +x /mongodb-gcs-backup/backup.sh
