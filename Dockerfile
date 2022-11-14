@@ -1,4 +1,4 @@
-FROM alpine:3.16.0
+FROM alpine:3.16.3
 
 RUN apt-get update && apt-get install -y \
   bash \
