@@ -1,5 +1,13 @@
 # mongodb-gcs-backup
 
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/diogopms/mongodb-gcs-backup/master.svg)
+[![GitHub issues](https://img.shields.io/github/issues/diogopms/mongodb-gcs-backup)](https://github.com/diogopms/mongodb-gcs-backup/issues)
+[![GitHub license](https://img.shields.io/github/license/diogopms/mongodb-gcs-backup)](https://github.com/diogopms/mongodb-gcs-backup/blob/master/LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/diogopms/mongodb-gcs-backup)](https://github.com/diogopms/mongodb-gcs-backup/stargazers)
+
+
+[![Docker Pulls](https://img.shields.io/docker/pulls/diogopms/mongodb-gcs-backup.svg)](https://hub.docker.com/r/diogopms/mongodb-gcs-backup/)
+
 This project aims to provide a simple way to perform a MongoDB server/db backup using `mongo-tools` and to upload it to Google Cloud Storage. It was greatly inspired from [`takemetour/docker-mongodb-gcs-backup`](https://github.com/takemetour/docker-mongodb-gcs-backup).
 
 We provide a kubernetes support thanks to the helm chart located in the `chart` folder of this repository.
@@ -9,6 +17,10 @@ We provide a kubernetes support thanks to the helm chart located in the `chart` 
 You can pull the public image from Docker Hub:
 
     docker pull diogopms/mongodb-gcs-backup:latest
+
+Or pull the public image from Github Registry:
+
+    docker pull ghcr.io/diogopms/mongodb-gcs-backup:latest
 
     #Manual build
     docker build -t diogopms/mongodb-gcs-backup .
