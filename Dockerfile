@@ -1,23 +1,14 @@
 FROM alpine:3.24.1
 
-RUN apk add --update \
+RUN apk add --no-cache \
   bash \
   mongodb-tools \
   curl \
-  python \
-  py-pip \
-  py-cffi \
-  && pip install --upgrade pip \
-  && apk add --virtual build-deps \
-  gcc \
-  libffi-dev \
-  python-dev \
-  linux-headers \
-  musl-dev \
-  openssl-dev \
-  && pip install gsutil \
-  && apk del build-deps \
-  && rm -rf /var/cache/apk/*
+  python3 \
+  py3-pip \
+  py3-crcmod \
+  && pip3 install --break-system-packages --upgrade pip \
+  && pip3 install --break-system-packages gsutil
 
 ADD . /mongodb-gcs-backup
 WORKDIR /mongodb-gcs-backup
